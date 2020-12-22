@@ -1,0 +1,16 @@
+apiVersion: gloo.solo.io/v1
+kind: Upstream
+metadata:
+  name: default-task-service-8080
+  namespace: gloo-system
+  resourceVersion: "348349"
+spec:
+  discoveryMetadata:
+    labels:
+      service: task-service
+  kube:
+    selector:
+      app: task-service
+    serviceName: task-service
+    serviceNamespace: default
+    servicePort: 8080
