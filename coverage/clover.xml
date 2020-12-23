@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1608681441411" clover="3.2.0">
-  <project timestamp="1608681441411" name="All files">
+<coverage generated="1608733917114" clover="3.2.0">
+  <project timestamp="1608733917115" name="All files">
     <metrics statements="43" coveredstatements="43" conditionals="16" coveredconditionals="16" methods="4" coveredmethods="4" elements="63" coveredelements="63" complexity="0" loc="43" ncloc="43" packages="1" files="1" classes="1"/>
     <file name="controllers.js" path="/Users/casewylie/Playground/listio/task-service/controllers.js">
       <metrics statements="43" coveredstatements="43" conditionals="16" coveredconditionals="16" methods="4" coveredmethods="4"/>

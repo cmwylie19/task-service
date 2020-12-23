@@ -1,0 +1,79 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.solo.io/v1","kind":"VirtualService","metadata":{"annotations":{},"managedFields":[{"apiVersion":"gateway.solo.io/v1","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:reportedBy":{},"f:state":{},"f:subresourceStatuses":{".":{},"f:*v1.Proxy.gloo-system.gateway-proxy":{".":{},"f:reportedBy":{},"f:state":{}}}}},"manager":"gateway","operation":"Update","time":"2020-12-22T21:47:15Z"},{"apiVersion":"gateway.solo.io/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:virtualHost":{".":{},"f:domains":{}}},"f:status":{}},"manager":"glooctl","operation":"Update"},{"apiVersion":"gateway.solo.io/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}}},"f:spec":{"f:virtualHost":{"f:routes":{}}}},"manager":"kubectl-client-side-apply","operation":"Update"}],"name":"default","namespace":"gloo-system"},"spec":{"virtualHost":{"domains":["*"],"routes":[{"matchers":[{"exact":"/api/v1/create"}],"options":{"prefixRewrite":"/create"},"routeAction":{"single":{"upstream":{"name":"default-task-service-8080","namespace":"gloo-system"}}}},{"matchers":[{"exact":"/api/v1/tasks"}],"options":{"prefixRewrite":"/"},"routeAction":{"single":{"upstream":{"name":"default-task-service-8080","namespace":"gloo-system"}}}}]}}}
+  managedFields:
+  - apiVersion: gateway.solo.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+    manager: kubectl-client-side-apply
+    operation: Update
+    time: "2020-12-23T20:07:11Z"
+  - apiVersion: gateway.solo.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:reportedBy: {}
+        f:state: {}
+        f:subresourceStatuses:
+          .: {}
+          f:*v1.Proxy.gloo-system.gateway-proxy:
+            .: {}
+            f:reportedBy: {}
+            f:state: {}
+    manager: gateway
+    operation: Update
+    time: "2020-12-23T20:07:12Z"
+  - apiVersion: gateway.solo.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        .: {}
+        f:virtualHost:
+          .: {}
+          f:domains: {}
+          f:routes: {}
+      f:status: {}
+    manager: glooctl
+    operation: Update
+    time: "2020-12-23T20:07:28Z"
+  name: default
+  namespace: gloo-system
+spec:
+  virtualHost:
+    domains:
+    - '*'
+    routes:
+    - matchers:
+      - exact: /api/v1/healthz
+      options:
+        prefixRewrite: /check/healthz
+      routeAction:
+        single:
+          upstream:
+            name: default-task-service-8080
+            namespace: gloo-system
+    - matchers:
+      - exact: /api/v1/create
+      options:
+        prefixRewrite: /create
+      routeAction:
+        single:
+          upstream:
+            name: default-task-service-8080
+            namespace: gloo-system
+    - matchers:
+      - exact: /api/v1/tasks
+      options:
+        prefixRewrite: /
+      routeAction:
+        single:
+          upstream:
+            name: default-task-service-8080
+            namespace: gloo-system

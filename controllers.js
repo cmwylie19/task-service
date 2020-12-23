@@ -5,10 +5,10 @@ export const getTaskById = (id, Tasks) => {
   if (ids.includes(id)) {
     return Tasks.filter((task) => task.id == id)[0];
   } else {
-    return `Task with id ${id} not found`
+    return `Task with id ${id} not found`;
   }
-}
-export const createTask = (name,Tasks)  => {
+};
+export const createTask = (name, Tasks) => {
   let names = Tasks.map((task) => task.name);
   if (name && !names.includes(name)) {
     let temp = { id: uid(), name, complete: false };
@@ -17,8 +17,8 @@ export const createTask = (name,Tasks)  => {
   } else if (names.includes(name)) {
     return "Task with same name already exists";
   }
-}
-export const updateTaskById = (id, Tasks, {complete, name}) => {
+};
+export const updateTaskById = (id, Tasks, { complete, name }) => {
   let ids = Tasks.map((task) => task.id);
   if (ids.includes(id)) {
     return Tasks.map((task) => {
@@ -31,7 +31,7 @@ export const updateTaskById = (id, Tasks, {complete, name}) => {
   } else {
     return `Task with id ${id} not found`;
   }
-}
+};
 
 export const deleteTaskById = (id, Tasks) => {
   let ids = Tasks.map((task) => task.id);
@@ -40,4 +40,4 @@ export const deleteTaskById = (id, Tasks) => {
   } else {
     return `Task with id ${id} not found`;
   }
-}
+};
