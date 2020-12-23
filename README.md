@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/cmwylie19/task-service/branch/master/graph/badge.svg?token=BRK6V3DOQA)](https://codecov.io/gh/cmwylie19/task-service) ![Node.js CI](https://github.com/cmwylie19/task-service/workflows/Node.js%20CI/badge.svg)
 # Task Service
 _This lab is intended to explain how to manage a simple task api using Gloo Edge._
 
