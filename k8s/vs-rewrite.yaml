@@ -60,7 +60,7 @@ spec:
             name: default-task-service-8080
             namespace: gloo-system
     - matchers:
-      - exact: /api/v1/users
+      - exact: /api/v1/tasks
       options:
         prefixRewrite: /
       routeAction:
