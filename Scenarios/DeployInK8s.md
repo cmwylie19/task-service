@@ -1,6 +1,6 @@
 # Deploy Application in Kubernetes
 
-_This scenario is a prereq scenerio. It is not mandatory for the other scenerios. It is created to show you how to deploy the task-service application in Kubernetes. It will walk through building a container from a dockerfile. Pushing the built container into a Container Reguistry (DockerHub in this case), deploying the application into kubernetes, and exposing a service to the outside world and clean it up when done._
+_This scenario is a prereq scenerio. It is not mandatory for the other scenerios. It is created to show you how to deploy the task-service application in Kubernetes. It will walk through building a container from a Dockerfile. Pushing the built container into a Container Reguistry (DockerHub in this case), deploying the application into kubernetes, and exposing a service to the outside world and clean it up when done._
 
 ## Prereqs
 
@@ -26,7 +26,11 @@ Server Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.3", GitCom
 
 ### Create container from the source code with a Dockerfile and push to external registry
 
-The very first part of the deployment of `task-service` is to build a container. The standard way of building a container is in docker and giving a tag in the format of [container-registry]/[username]/[app-name].
+The very first part of the deployment of `task-service` is to build a container. We will build the container using docker and give it a specific name. This part is amongst the most important to get right or you will not be able to push your container to the container registry. Tag your image with the format of [container-registry]/[username]/[app-name].
+
+- [container-registry] is the container registry where you are going to push your image, `docker.io` or `quay.io` are a couple of options
+- [username] is your username for the container registry
+- [app-name] is the name of your image
 
 We are going to deploy our application to Dockerhub.
 
@@ -36,7 +40,7 @@ The first step that you must do is log into dockerhub to go ahead and get that o
 docker login
 ```
 
-Now that you are logged into dockerhub, we can go ahead and build our container locally. We are going to build the container from the `Dockerfile` in the source. It is important to play close attention to the tagging system when we build the container, we need to specify the external image registry, which is this case will be dockerhub, denoted by `docker.io`, the username for the container registry, in this case `cmwylie19`, and the name of the application, in this case `task-service`. Below if the command to build the container with the appropriate tag for me:
+Now that you are logged into dockerhub, we can go ahead and build our container locally. We are going to build the container from the `Dockerfile` in the source. It is important to play close attention to the tagging system when we build the container, we need to specify the external image registry, which is this case will be dockerhub, denoted by `docker.io`, the username for the container registry, in this case `cmwylie19`, and the name of the application, in this case `task-service`. Below is the command to build the container with the appropriately tag for my user, `cmwylie19` on dockerhub:
 
 ```
 docker build -t docker.io/cmwylie19/task-service .
@@ -51,7 +55,7 @@ docker push docker.io/cmwylie19/task-service
 ### Create a deployment in Kubernetes using kubectl
 
 A quick way to create a deployment in kubernetes is by using `kubectl`.
-We simply need to create a name for the deployment, in this case task-service, and point to the image from which we want to create the deployment, in this case `docker.io/cmwylie19/task-service`.
+We simply need to create a name for the deployment, in this case, task-service, and point to the image from which we want to create the deployment, in this case `docker.io/cmwylie19/task-service`.
 
 ```
 kubectl create deployment task-service --image=docker.io/cmwylie19/task-service:latest
@@ -73,13 +77,15 @@ Now that you have exported the deployment to yaml, you will need to sanitize it,
 
 ### Create a service
 
-Now that we have our deployment created, we can expose a service from it. We will use `kubectl expose` again and give the service a type LoadBalancer which indicates that we are exposing our service outside of the cluster. _In later scenarios this will not be necessary because we will use an ingress gateway_. For now, in order to use our simple app, we must create a service.
+Now that we have our deployment created, we can expose a service from it. We will use `kubectl expose`, and give the service a type `LoadBalancer` which indicates that we are exposing our service outside of the cluster.
+
+ _In later scenarios this will not be necessary because we will use an ingress gateway_. For now, in order to use our simple app, we must create a service.
 
 ```
 kubectl expose deployment task-service --type=LoadBalancer --port=8080
 ```
 
-Check the status of the service with the follwing command:
+Check the status of the service with the following command:
 
 ```
 kubectl get svc task-service
@@ -89,13 +95,21 @@ kubectl get svc task-service
 
 Now that we have create a service of type LoadBalancer we can try and curl our application to test:
 
-Lets try to create a task:
+Lets create a task:
 
 ```
 curl -X POST -H "Content-Type: application/json" -d '{"name":"test"}' http://localhost:8080/create
 ```
+expected output should resemble the output below, with a different id:
+```
+Created{
+  "id": "18f5a03088a",
+  "name": "test",
+  "complete": false
+}%  
+```
 
-You should recieve a newly created task as output.
+If you received a similar output then you are on the right track! 
 
 ### Clean Up
 
