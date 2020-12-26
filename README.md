@@ -2,7 +2,9 @@
 
 # Task Service
 
-_This repository of scenarios is intended to explain how to use Gloo Edge as an API Gateway and Kubernetes Ingress Controller to manage a simple task api. The scenarios will take you from building and deploying the application from a source to complex traffic routing and rate limiting scenarios. The first scenario is a provides a background and howto on Cloud Native Application Development and Deployment so feel free to skip it if you already know your way around the cluster._
+_This repository of scenarios is intended to explain how to use Gloo Edge as an API Gateway and Kubernetes Ingress Controller to manage a simple task api. The scenarios will take you from building and deploying the application from a source to traffic routing and rate limiting scenarios. The first scenario is a provides a background and howto guide on Cloud Native Application Development and Deployment so feel free to skip it if you already know your way around the cluster._
+
+**NOTE:** It may be advantageous to refer back to this `README.md` while you are doing the scenarios to compare and contract how the application works _without_ Gloo Edge to better understand the transformations that are being made at the proxy level.
 
 ## Background
 
@@ -49,7 +51,7 @@ npm start
 **GET /healthz - check health**
 
 ```
-curl http://localhost:3000/healthz
+curl http://localhost:3000/check/healthz
 ```
 
 **POST /create - Create Task**
