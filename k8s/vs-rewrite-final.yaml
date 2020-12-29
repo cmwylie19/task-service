@@ -51,6 +51,15 @@ spec:
       - "*"
     routes:
       - matchers:
+        - exact: /api/v1/healthz
+        options:
+          prefixRewrite: /check/healthz
+        routeAction:
+          single:
+            upstream:
+              name: default-task-service-8080
+              namespace: gloo-system
+      - matchers:
           - exact: /api/v1/create
         options:
           prefixRewrite: /create
