@@ -23,7 +23,7 @@ First thing after install Gloo Edge enterprise is to deploy the `Task-Service` a
 
 Lets go ahead and deploy the application into kubernetes, if you need a refresher on how to deploy an application into Kubernetes, checkout the first Scenario, 
 ```
-kubectl apply -f k8s/task-servoce/yaml
+kubectl apply -f k8s/task-service.yaml
 ```
 
 Once the task-service has a status of `RUNNING` you are done with this step
@@ -35,5 +35,5 @@ _or_ if you have `watch` installed on your system
 watch kubectl get pods
 ```
 
-## Update the Gloo Edge Settings manifest to configure the reate limiting descriptors
+## Update the Gloo Edge Settings manifest to configure the rate limiting descriptors
 Rate limiting descriptors define an ordered tuple of keys that _have to_ match for the in order for the associated rate limit to be applied [Gloo Edge Docs](https://docs.solo.io/gloo-edge/latest/guides/security/rate_limiting/envoy/). 
