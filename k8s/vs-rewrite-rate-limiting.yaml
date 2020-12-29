@@ -71,9 +71,15 @@ spec:
       - matchers:
           - prefix: /api/v1/tasks/
         options:
+          ratelimit:
+            rateLimits:
+              - actions:
+                  - genericKey:
+                      descriptorValue: "per-minute"
           prefixRewrite: /
         routeAction:
           single:
             upstream:
               name: default-task-service-8080
               namespace: gloo-system
+          

@@ -1,0 +1,102 @@
+apiVersion: gloo.solo.io/v1
+kind: Settings
+metadata:
+  creationTimestamp: "2020-12-21T21:59:30Z"
+  generation: 5
+  labels:
+    app: gloo
+  managedFields:
+  - apiVersion: gloo.solo.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        .: {}
+        f:discovery:
+          .: {}
+          f:fdsMode: {}
+        f:discoveryNamespace: {}
+        f:gateway:
+          .: {}
+          f:readGatewaysFromAllNamespaces: {}
+          f:validation:
+            .: {}
+            f:allowWarnings: {}
+            f:alwaysAccept: {}
+            f:proxyValidationServerAddr: {}
+        f:gloo:
+          .: {}
+          f:disableKubernetesDestinations: {}
+          f:disableProxyGarbageCollection: {}
+          f:enableRestEds: {}
+          f:restXdsBindAddr: {}
+          f:xdsBindAddr: {}
+        f:kubernetesArtifactSource: {}
+        f:kubernetesConfigSource: {}
+        f:kubernetesSecretSource: {}
+        f:refreshRate: {}
+    manager: Go-http-client
+    operation: Update
+    time: "2020-12-21T21:59:30Z"
+  - apiVersion: gloo.solo.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        f:ratelimit: {}
+    manager: kubectl-patch
+    operation: Update
+    time: "2020-12-21T22:21:42Z"
+  - apiVersion: gloo.solo.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        f:ratelimit:
+          f:descriptors: {}
+        f:ratelimitServer:
+          .: {}
+          f:ratelimitServerRef:
+            .: {}
+            f:name: {}
+            f:namespace: {}
+    manager: kubectl-edit
+    operation: Update
+    time: "2020-12-28T15:48:41Z"
+  name: default
+  namespace: gloo-system
+  resourceVersion: "1130562"
+  selfLink: /apis/gloo.solo.io/v1/namespaces/gloo-system/settings/default
+  uid: 55cb8a50-129d-4b43-811d-41897f6946b2
+spec:
+  discovery:
+    fdsMode: WHITELIST
+  discoveryNamespace: gloo-system
+  gateway:
+    readGatewaysFromAllNamespaces: false
+    validation:
+      allowWarnings: true
+      alwaysAccept: true
+      proxyValidationServerAddr: gloo:9988
+  gloo:
+    disableKubernetesDestinations: false
+    disableProxyGarbageCollection: false
+    enableRestEds: false
+    restXdsBindAddr: 0.0.0.0:9976
+    xdsBindAddr: 0.0.0.0:9977
+  kubernetesArtifactSource: {}
+  kubernetesConfigSource: {}
+  kubernetesSecretSource: {}
+  ratelimit:
+    descriptors:
+    - key: generic_key
+      rateLimit:
+        requestsPerUnit: 2
+        unit: MINUTE
+      value: per-minute
+  ratelimitServer:
+    ratelimitServerRef:
+      name: default-task-service-8080
+      namespace: gloo-system
+  refreshRate: 60s
