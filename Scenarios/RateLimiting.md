@@ -36,4 +36,4 @@ watch kubectl get pods
 ```
 
 ## Update the Gloo Edge Settings manifest to configure the rate limiting descriptors
-Rate limiting descriptors define an ordered tuple of keys that _have to_ match  in order for the associated rate limit to be applied [Gloo Edge Docs](https://docs.solo.io/gloo-edge/latest/guides/security/rate_limiting/envoy/). 
+Rate limiting descriptors define an ordered tuple of keys that _have to_ match  in order for the associated rate limit to be applied, (credit, [Gloo Edge Docs](https://docs.solo.io/gloo-edge/latest/guides/security/rate_limiting/envoy/). )
