@@ -4,7 +4,7 @@ _During this scenario we will explore Traffic Management features of Gloo Edge t
 
 ## Background
 
-_Gloo Edge automatically creates Virtual Services and Upstreams when it is deployed_
+_Gloo Edge automatically creates Upstreams when it is deployed_
 
 **_Virtual Services_** define a set of route rules that live under a domain or set of domains. Route rules consist of matchers, which specify the kind of function calls to match (requests and events, are currently supported), and the name of the destination (or destinations) where to route them.
 
