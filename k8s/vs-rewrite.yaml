@@ -1,9 +1,6 @@
 apiVersion: gateway.solo.io/v1
 kind: VirtualService
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"gateway.solo.io/v1","kind":"VirtualService","metadata":{"annotations":{},"name":"default","namespace":"gloo-system"},"spec":{"virtualHost":{"domains":["*"],"routes":[{"matchers":[{"exact":"/api/v1/create"}],"options":{"prefixRewrite":"/create"},"routeAction":{"single":{"upstream":{"name":"default-task-service-8080","namespace":"gloo-system"}}}},{"matchers":[{"exact":"/api/v1/users"}],"options":{"prefixRewrite":"/"},"routeAction":{"single":{"upstream":{"name":"default-task-service-8080","namespace":"gloo-system"}}}}]}}}
   name: default
   namespace: gloo-system
 spec:
