@@ -1,0 +1,60 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: default
+  namespace: gloo-system
+spec:
+  virtualHost:
+    domains:
+      - "*"
+    routes:
+      - matchers:
+        - exact: /callback
+        options:
+          prefixRewrite: /check/healthz
+        routeAction:
+          single:
+            upstream:
+              name: default-task-service-8080
+              namespace: gloo-system
+      # - matchers:
+      #   - exact: /api/v1/healthz
+      #   options:
+      #     prefixRewrite: /check/healthz
+      #   routeAction:
+      #     single:
+      #       upstream:
+      #         name: default-task-service-8080
+      #         namespace: gloo-system
+      - matchers:
+          - exact: /api/v1/create
+        options:
+          prefixRewrite: /create
+        routeAction:
+          single:
+            upstream:
+              name: default-task-service-8080
+              namespace: gloo-system
+      - matchers:
+          - exact: /api/v1/tasks
+        options:
+          prefixRewrite: /
+        routeAction:
+          single:
+            upstream:
+              name: default-task-service-8080
+              namespace: gloo-system
+      - matchers:
+          - prefix: /api/v1/tasks/
+        options:
+          prefixRewrite: /
+        routeAction:
+          single:
+            upstream:
+              name: default-task-service-8080
+              namespace: gloo-system
+    options:
+      extauth:
+        configRef:
+          name: google-oidc
+          namespace: gloo-system
