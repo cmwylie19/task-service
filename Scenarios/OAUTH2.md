@@ -3,7 +3,7 @@ _During this scenario we are going make users log into google in order to use ou
 
 
 ## Background
-This part may be redundant if you have been following along in the previous scenarios, but I am going to start off assuming that you have **NOT**. 
+The setup and installation of `glooctl` and `Gloo Edge` may be redundant if you have been following along in the previous scenarios, but I am going to start off assuming that you have **NOT**. If you already have `glooctl` and `Gloo Edge Enterprise` installed, [skip to Deploy Task-Service in Kubernetes](#deploy-task-service-in-kubernetes)
 
 If you have been following along, and you already have `glooctl` installed, and `Gloo Edge enterprise` installed, please skip to *Deploying Task-Service in Kubernetes*.
 
@@ -24,10 +24,10 @@ glooctl install gateway enterprise --license-key=<license-key>
 ```
 
 ## Steps
-- Deploy `Task-Service` in Kubernetes
-- Create and analyze a `VirtualService`
-- Register your Application in Google
-- Create a client ID secret
+- [Deploy `Task-Service` in Kubernetes](#deploy-task-service-in-kubernetes)
+- [Create and analyze a `VirtualService`](#create-and-apply-a-virtualservice)
+- [Register your Application in Google](#register-your-application-in-google)
+- [Create a CLIENT_SECRET secret](#create-a-client_secret-secret)
 - [Create an AuthConfig](#create-an-authconfig)
 - Update Virtual Service to Use AuthConfig
 - PortForward to 8080 and Test!
@@ -125,7 +125,7 @@ CLIENT_ID=<your client id>
 CLIENT_SECRET=<your client secret>
 ```
 
-## Create a client ID secret
+## Create a `CLIENT_SECRET` secret
 Gloo Edge expects the client secret  to be stored in a Kubernetes secret. Let's create the secret using the `CLIENT_SECRET` variable:
 ```
 glooctl create secret oauth --namespace gloo-system --name google --client-secret $CLIENT_SECRET
