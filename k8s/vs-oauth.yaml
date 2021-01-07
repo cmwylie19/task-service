@@ -53,8 +53,8 @@ spec:
             upstream:
               name: default-task-service-8080
               namespace: gloo-system
-    options:
-      extauth:
-        configRef:
-          name: google-oidc
-          namespace: gloo-system
+    # options:
+    #   extauth:
+    #     configRef:
+    #       name: google-oidc
+    #       namespace: gloo-system

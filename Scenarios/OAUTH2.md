@@ -25,8 +25,12 @@ glooctl install gateway enterprise --license-key=<license-key>
 
 ## Steps
 - Deploy `Task-Service` in Kubernetes
-- Create a `VirtualService`
-- Configure Envoy rate limiting actions in the `VirtualService`
+- Create and analyze a `VirtualService`
+- Register your Application in Google
+- Create a client ID secret
+- [Create an AuthConfig](#create-authconfig)
+- Update Virtual Service to Use AuthConfig
+- PortForward to 8080 and Test!
 
 ## Deploy `Task-Service` in Kubernetes
 Just a little background- Task-Service is a dead simple Nodejs app with 6 endpoints, built to abstract away the complexities of a complicated app so you can focus _ONLY_ on Gloo Edge features and functionalities by applying them to the app.
@@ -48,180 +52,128 @@ watch kubectl get pods
 ```
 
 ## Create and apply a `VirtualService`
-We are going to use a virtual service that we created during the [Rewriting Routes Scenario](https://github.com/cmwylie19/task-service/blob/master/Scenarios/TrafficManagement-RewriteRoutes.md)
-Rate limiting descriptors define an ordered tuple of keys that _have to_ match  in order for the associated rate limit to be applied, (credit, [Gloo Edge Docs](https://docs.solo.io/gloo-edge/latest/guides/security/rate_limiting/envoy/). )
+We are going to use a virtual service that we created during the [Rewriting Routes Scenario](https://github.com/cmwylie19/task-service/blob/master/Scenarios/TrafficManagement-RewriteRoutes.md).
 
-You will create the Rate limit descriptors in the `Gloo Edge Settings manifest`:
+The only difference is that we updated the `/api/v1/healthz` endpoint to be `/callback`, the endpoint will _still_ route to the same upstream route on the application of `/check/healthz`.
+
+Go ahead and get a review of the Virtual Service:
 ```
-kubectl get settings default -o yaml -n gloo-system
+less k8s/vs-oauth.yaml
 ```
 
-The first Rate Limit descriptor we are going to utilize will limit requests to 2 per minute:
-
-_This would be a very low request rate in production, but it allows us to easily test and prove how Rate Limiting works in Gloo Edge._
-
-The contents of `k8s/patch.yaml` contain the descriptor that are looking to use:
+Now lets go ahead and apply the Virtual Service.
 ```
+kubectl apply -f k8s/vs-oauth.yaml
+```
+
+Now that we have applied our Virtual Service, lets take a look at it with `glooctl` to look at the routes:
+```
+glooctl get vs default
+```
+
+output:
+```
++-----------------+--------------+---------+------+----------+-----------------+---------------------------------------+
+| VIRTUAL SERVICE | DISPLAY NAME | DOMAINS | SSL  |  STATUS  | LISTENERPLUGINS |                ROUTES                 |
++-----------------+--------------+---------+------+----------+-----------------+---------------------------------------+
+| default         |              | *       | none | Accepted |                 | /callback ->                          |
+|                 |              |         |      |          |                 | gloo-system.default-task-service-8080 |
+|                 |              |         |      |          |                 | (upstream)                            |
+|                 |              |         |      |          |                 | /api/v1/create ->                     |
+|                 |              |         |      |          |                 | gloo-system.default-task-service-8080 |
+|                 |              |         |      |          |                 | (upstream)                            |
+|                 |              |         |      |          |                 | /api/v1/tasks ->                      |
+|                 |              |         |      |          |                 | gloo-system.default-task-service-8080 |
+|                 |              |         |      |          |                 | (upstream)                            |
+|                 |              |         |      |          |                 | /api/v1/tasks/ ->                     |
+|                 |              |         |      |          |                 | gloo-system.default-task-service-8080 |
+|                 |              |         |      |          |                 | (upstream)                            |
+```
+
+You can see the output of the routes.
+
+Lets test our new `/callback` route, which is mapped to the `/check/healthz` endpoint on the app just to make sure everything is working as expected.
+
+```
+curl $(glooctl proxy url)/callback
+```
+
+You should receive an output of `pong!`
+
+## Register your Application in Google
+For this section I am just going to copy and paste from the [Gloo Edge Security Docs under Authentication and Authorization/Ext Auth/OAuth/Authenticate with Google](https://docs.solo.io/gloo-edge/latest/guides/security/auth/extauth/oauth/google/). The explanantion is very straight forward:
+
+In order to use Google as our identity provider, we need to register our application with the Google API. To do so:
+
+- Log in to the Google Developer Console
+- If this is the first time using the console, create a project as prompted;
+- Navigate to the OAuth consent screen menu item
+- Input a name for your application in the Application name text field and select Internal as the _Application type_
+- Click **Save**;
+- Navigate to the Credentials menu item
+- click Create credentials, and then OAuth client ID
+- On the next page, select Web Application as the type of the client (as we are only going to use it for demonstration purposes),
+- Enter a name for the OAuth client ID or accept the default value
+- Under _Authorized redirect URIs_ click on Add URI
+- Enter the URI: http://localhost:8080/callback
+- Click Create
+
+You will be presented with the client id and client secret for your application. Let’s store them in two environment variables:
+
+```
+CLIENT_ID=<your client id>
+CLIENT_SECRET=<your client secret>
+```
+
+## Create a client ID secret
+Gloo Edge expects the client secret  to be stored in a Kubernetes secret. Let's create the secret using the `CLIENT_SECRET` variable:
+```
+glooctl create secret oauth --namespace gloo-system --name google --client-secret $CLIENT_SECRET
+```
+
+Lets double check and look at the secret we just created:
+```
+kubectl get secret google -n gloo-system -o yaml
+```
+
+```
+kubectl describe secret google -n gloo-system 
+```
+[#create-authconfig]
+(#create-authconfig)
+## Create an AuthConfig
+It is the AuthConfig that is going to secure our Virtual Service.
+
+The fields in this `AuthConfig` are created using the information that we got when we registered our application with Google in an earlier step.
+
+```
+apiVersion: enterprise.gloo.solo.io/v1
+kind: AuthConfig
+metadata:
+  name: google-oidc
+  namespace: gloo-system
 spec:
-  ratelimit:
-    descriptors:
-      - key: generic_key
-        value: "per-minute"
-        rateLimit:
-          requestsPerUnit: 2
-          unit: MINUTE  
+  configs:
+  - oauth2:
+      oidcAuthorizationCode:
+        app_url: http://localhost:8080
+        callback_path: /callback
+        client_id: <CLIENT_ID>
+        client_secret_ref:
+          name: google
+          namespace: gloo-system
+        issuer_url: https://accounts.google.com
+        session:
+          cookieOptions:
+            notSecure: true
+        scopes:
+        - email
 ```
 
-We are going to apply the patch to the `Gloo Edge Settings manifest` with the `kubectl patch` command:
-```
-kubectl patch -n gloo-system settings default --type merge --patch "$(cat k8s/patch.yaml)"
-```
+Notice that this `AuthConfig` references the secret that we just created: `spec.configs.oauth2[0].oidcAuthorizationCode.client_secret_ref`.
 
-Now that we have patched the settings manifest file in `gloo-system` namespace we can apply an action to our Virtual Service to test the results and see it in action.
-
-## Configure Envoy rate limiting actions in the `VirtualService`
-The envoy rate limiting actions are applied to a Virtual Service or Individual routes to dictate how the requests are associated with Rate Limiting.
-
-You can specify _more than one rate limit action_, the request is throttled if any one of the actions triggers to signal the rate limiting service to signal throttling.
-
-
-During the [Traffic Management Scenario](https://github.com/cmwylie19/task-service/blob/master/scenarios/TrafficManagement-RewriteRoutes.md), we used Gloo Edge to rewrite our existing routes in the Nodejs app in a more elegant way, in this scenario we will pick back up exactly where we left off, with all new routes in our `Virtual Service`. 
-
+Copy the above AuthConfig into a file:
 ```
-kubectl apply -f k8s/vs-rewrite-final.yaml
+nano authconfig-google-oidc.yaml
 ```
-
-Now, before moving on further, lets look at how the Task-Service app works with routing rules applied.
-
-First, lets create a task:
-```
-curl -X POST -H "Content-Type: application/json" -d '{"name":"Rate Limiting"}' $(glooctl proxy url)/api/v1/create 
-```
-
-output:
-```
-Created{
-  "id": "4706bd3348b",
-  "name": "Rate Limiting",
-  "complete": false
-}% 
-```
-
-We are going to write a short shell script to curl the created task three times, since we have not applied the Rate Limiting action to our route, this should work. **The IDs are generated randomly, use the ID from _YOUR_ output in the command**
-```
-for x in $(seq 3) do curl -v $(glooctl proxy url)/api/v1/tasks/4706bd3348b; done
-```
-
-Pay close attention to the status code HTTP header in the response:
-```
-< HTTP/1.1 200 OK
-```
-
-They should all come back as 200s.
-
-Now lets apply an action to our route in our default `VirtualService` that will match the `per-minute` descriptor in the `Gloo Settings Manifest`.
-
-
-```
-options:
-  ratelimit:
-    rateLimits:
-      - actions:
-        - genericKey:
-            descriptorValue: "per-minute"
-```
-
-The route that we are targeting is `/api/v1/tasks/`, and can be found on line 72 of `k8s/vs-rewrite-final.yaml`.
-
--------------
-**Remember** check the default virtual service in a Kubernetes environment by running:
-```
-kubectl get vs default -n gloo-system
-```
-or 
-```
-glooctl get vs
-```
--------------
-
-In order to avoid potential yaml formatting problems I have written the action into the route in a yaml file for you.
-
-Lets apply the yaml file with the Rate Limit action on the `/api/v1/tasks/` route:
-```
-kubectl apply -f k8s/vs-rewrite-rate-limiting.yaml
-```
-
-Now that we have applied the Rate Limit action to the Virtual Service lets run the simple shell command that curls the `/api/v1/tasks/` endpoint 3 times. Remember- we should only get two 200s back, and one `429 Too Many Requests` since our descriptor is set up for 2 requests per minute:
-```
-for x in $(seq 3); do curl -v $(glooctl proxy url)/api/v1/tasks/4706bd3348b; done 
-```
-
-output:
-```
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 80 (#0)
-> GET /api/v1/tasks/4706bd3348b HTTP/1.1
-> Host: localhost
-> User-Agent: curl/7.64.1
-> Accept: */*
-> 
-< HTTP/1.1 200 OK
-< x-powered-by: Express
-< content-type: text/html; charset=utf-8
-< content-length: 73
-< etag: W/"49-oACCDq5juTi8YdZPrJPxQnPF9Oc"
-< date: Tue, 29 Dec 2020 17:11:19 GMT
-< x-envoy-upstream-service-time: 0
-< server: envoy
-< 
-{
-  "id": "4706bd3348b",
-  "name": "Rate Limiting",
-  "complete": false
-* Connection #0 to host localhost left intact
-}* Closing connection 0
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 80 (#0)
-> GET /api/v1/tasks/4706bd3348b HTTP/1.1
-> Host: localhost
-> User-Agent: curl/7.64.1
-> Accept: */*
-> 
-< HTTP/1.1 200 OK
-< x-powered-by: Express
-< content-type: text/html; charset=utf-8
-< content-length: 73
-< etag: W/"49-oACCDq5juTi8YdZPrJPxQnPF9Oc"
-< date: Tue, 29 Dec 2020 17:11:19 GMT
-< x-envoy-upstream-service-time: 0
-< server: envoy
-< 
-{
-  "id": "4706bd3348b",
-  "name": "Rate Limiting",
-  "complete": false
-* Connection #0 to host localhost left intact
-}* Closing connection 0
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 80 (#0)
-> GET /api/v1/tasks/4706bd3348b HTTP/1.1
-> Host: localhost
-> User-Agent: curl/7.64.1
-> Accept: */*
-> 
-< HTTP/1.1 429 Too Many Requests
-< x-envoy-ratelimited: true
-< date: Tue, 29 Dec 2020 17:11:19 GMT
-< server: envoy
-< content-length: 0
-< 
-* Connection #0 to host localhost left intact
-* Closing connection 0
-```
-
-If you got an Http Status Code of `429` on the third request you have successfully completed the scenario!
-
-
+Paste in the code and **UPDATE YOUR CLIENT ID**
