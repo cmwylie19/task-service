@@ -30,7 +30,7 @@ glooctl install gateway enterprise --license-key=<license-key>
 - [Create a CLIENT_SECRET secret](#create-a-client_secret-secret)
 - [Create an AuthConfig](#create-an-authconfig)
 - [Update Virtual Service to Use ExtAuth](#update-virtual-service-to-use-ExtAuth)
-- [PortForward to 8080 and Test!](#portforward-to-8080-and-test!)
+- [PortForward to 8080 and Test!](#portforward-to-8080-and-test)
 - [Logging](#logging)
 - [Cleanup](#cleanup)
 
