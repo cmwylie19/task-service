@@ -29,8 +29,10 @@ glooctl install gateway enterprise --license-key=<license-key>
 - [Register your Application in Google](#register-your-application-in-google)
 - [Create a CLIENT_SECRET secret](#create-a-client_secret-secret)
 - [Create an AuthConfig](#create-an-authconfig)
-- Update Virtual Service to Use AuthConfig
-- PortForward to 8080 and Test!
+- [Update Virtual Service to Use ExtAuth](#update-virtual-service-to-use-ExtAuth)
+- [PortForward to 8080 and Test!](#portforward-to-8080-and-test!)
+- [Logging](#logging)
+- [Cleanup](#cleanup)
 
 ## Deploy `Task-Service` in Kubernetes
 Just a little background- Task-Service is a dead simple Nodejs app with 6 endpoints, built to abstract away the complexities of a complicated app so you can focus _ONLY_ on Gloo Edge features and functionalities by applying them to the app.
@@ -176,3 +178,66 @@ Copy the above AuthConfig into a file:
 nano authconfig-google-oidc.yaml
 ```
 Paste in the code and **UPDATE YOUR CLIENT ID**
+
+## Update Virtual Service to use ExtAuth
+Now, lets edit our `k8s/vs-oauth.yaml` and tell the routes to use our `AuthConfig` `google-oidc`.
+
+first lets describe our authconfig:
+```
+kubectl describe authconfig google-oidc -n gloo-system
+```
+
+Now, on the `routes` level of the yaml. We are going to add:
+```
+options:
+  extauth:
+    configRef:
+      name: google-oidc
+      namespace: gloo-system
+```
+
+You can highlight the commented area at the bottom of `k8s/vs-oauth.yaml` and uncomment all at once.
+
+Once updated, run `kubectl apply -f k8s/vs-oauth.yaml --dry-run=client` to make sure there are not errors, then run:
+```
+kubectl apply -f k8s/vs-oauth.yaml
+```
+
+We now have our Routes protected by the `AuthConfig` which references our `CLIENT_SECRET`.
+
+
+## PortForward to 8080 and Test!
+If we do the command, `glooctl proxy url` we will see the address of our `Gateway Proxy` to our application.
+```
+➜ glooctl proxy url
+http://localhost:80
+```
+Problem is that google is redirecting to port 8080!
+
+To make our `Gateway Proxy` listen on 8080 we will issue a `kubectl port-forward` command:
+```
+kubectl port-forward -n gloo-system deploy/gateway-proxy 8080
+```
+
+Now, in a browser, http://localhost:8080/api/v1/tasks, which is the endpoint that displays all tasks.
+
+First thing you will notice is that you have been redirected to Google to Login. 
+![Google Login](assets/task-service.png)
+
+Upon Logging in, you will be redirected to the `get all tasks` endpoint `/api/v1/tasks`, and considering we currently have no tasks, we will see an empty array.
+
+![Google Login](assets/all_tasks.png)
+
+## Logging 
+To view the Auth Server logs on Kubernetes run the following command:
+```
+kubectl logs -n gloo-system deploy/extauth -f
+```
+
+## Cleanup
+```
+kubectl delete virtualservice -n gloo-system default
+kubectl delete authconfig -n gloo-system google-oidc
+kubectl delete secret -n gloo-system google
+kubectl delete -f k8s/task-service.yaml
+```
