@@ -28,7 +28,7 @@ glooctl install gateway enterprise --license-key=<license-key>
 - Create and analyze a `VirtualService`
 - Register your Application in Google
 - Create a client ID secret
-- [Create an AuthConfig](#create-authconfig)
+- [Create an AuthConfig](#create-an-authconfig)
 - Update Virtual Service to Use AuthConfig
 - PortForward to 8080 and Test!
 
@@ -139,8 +139,7 @@ kubectl get secret google -n gloo-system -o yaml
 ```
 kubectl describe secret google -n gloo-system 
 ```
-[#create-authconfig]
-(#create-authconfig)
+
 ## Create an AuthConfig
 It is the AuthConfig that is going to secure our Virtual Service.
 
