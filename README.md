@@ -38,10 +38,6 @@ These scenarios are built around the express application found at `server.js`.
 
 _Gloo Edge is an API Gateway, and Kubernetes Ingress Controller that is packed with functionality. These scenarios have been tested on Docker for Desktop but should be compatible for native Kubernetes environments like GKE. It is recommended that you do the scenarios in the order that they are listed to get the most out of this repository. If you find any issues please open up an issue in GitHub_
 
-## Assumptions
-
-- You have a kubernetes environment with `kubectl`
-- You have a unix like environment to execute the commands
 
 ## Scenarios
 
