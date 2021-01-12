@@ -2,7 +2,7 @@
 
 # Task Service
 
-_This repository of scenarios is intended to explain how to use **Gloo Edge** as an API Gateway and Kubernetes Ingress Controller to manage a simple Nodejs express task api._
+_This repository of scenarios is intended to explain how to use **Gloo Edge** as an API Gateway to manage a simple Nodejs express task api._
 
 These scenarios are built around the express application found at `server.js`. 
 
@@ -16,13 +16,21 @@ These scenarios are built around the express application found at `server.js`.
 - How to use `glooctl` to create a virtual service from scratch
 - How to create routes with glooctl
 - How to add routes to your Virtual Service in the yaml manifest
+- How to export and sanitize your code
 
 **Scenario 3**: [Applying Rate Limiting to Protect your app](Scenarios/RateLimiting.md)
+- How to install Gloo Edge Enterprise
+- How to update Gloo Edge Settings manifest to configure Rate Limiting descriptors
+- How to configure Envoy Rate Limiting actions in the `VirtualService`
 
 
 **Scenario 4**: [Oauth2 with Google](Scenarios/OAUTH2.md)
-r to a container registryfound at `server.js` to build, deploy, manage, and secure the Task API.
-
+- Create a callback route in your Virtual Services to forward from the Identity Provider with a `access_token` and `id_token`
+- Register you application with Google as the identity provider
+- Create a `client_secret` as a kubernetes secret
+- Create an `AuthConfig` CR
+- Update your VirtualService to use the `AuthConfig` with `ExtAuth`
+- Logs from the `AuthServer`
 
 **NOTE:** It may be advantageous to refer back to this `README.md` while you are going through the scenarios to see how the application works _without_ Gloo Edge to better understand the transformations that are being made at the proxy level.
 
