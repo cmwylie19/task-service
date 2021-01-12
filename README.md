@@ -32,8 +32,6 @@ These scenarios are built around the express application found at `server.js`.
 - Update your VirtualService to use the `AuthConfig` with `ExtAuth`
 - Logs from the `AuthServer`
 
-**NOTE:** It may be advantageous to refer back to this `README.md` while you are going through the scenarios to see how the application works _without_ Gloo Edge to better understand the transformations that are being made at the proxy level.
-
 ## Background
 
 _Gloo Edge is an API Gateway, and Kubernetes Ingress Controller that is packed with functionality. These scenarios have been tested on Docker for Desktop but should be compatible for native Kubernetes environments like GKE. It is recommended that you do the scenarios in the order that they are listed to get the most out of this repository. If you find any issues please open up an issue in GitHub_
