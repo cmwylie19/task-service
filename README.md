@@ -2,7 +2,27 @@
 
 # Task Service
 
-_This repository of scenarios is intended to explain how to use Gloo Edge as an API Gateway and Kubernetes Ingress Controller to manage a simple Nodejs express task api. 
+_This repository of scenarios is intended to explain how to use **Gloo Edge** as an API Gateway and Kubernetes Ingress Controller to manage a simple Nodejs express task api._
+
+These scenarios are built around the express application found at `server.js`. 
+
+[**Scenario 1: Build and Deploy App in Kubernetes**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/DeployInK8s.md) 
+- How to build a container image from the `Dockerfile`
+- How to push containers to a container registry
+- Create a Kubernetes eployment from the command line using an image
+- Create a Kubernetes Service from the command line from a deployment
+
+[**Scenario 2: Rewriting the Routes using a Virtual Service**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/TrafficManagement-RewriteRoutes.md)
+- How to use `glooctl` to create a virtual service from scratch
+- How to create routes with glooctl
+- How to add routes to your Virtual Service in the yaml manifest
+
+[**Scenario 3: Applying Rate Limiting to Protect your app**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/RateLimiting.md)
+
+
+[**Scenario 4: Oauth2 with Google**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/OAUTH2.md)
+r to a container registryfound at `server.js` to build, deploy, manage, and secure the Task API.
+
 
 The scenarios will take you from building and deploying the application from a source to traffic re-routing, to rate limiting, to securing your Application with OAuth2 OIDC flow using Google as an authentication provider. 
 
@@ -12,7 +32,7 @@ The first scenario is a provides a background and [howto guide](https://github.c
 
 ## Background
 
-Gloo Edge is an API Gateway, and Kubernetes Ingress Controller that is packed with functionality. These scenarios use a simple Nodejs Task app that uses Express framework to teach you how to build, deploy, manage, and secure the simple Task API. These scenarios have been tested on Docker for Desktop but should be compatible for native Kubernetes environments like GKE.
+_Gloo Edge is an API Gateway, and Kubernetes Ingress Controller that is packed with functionality. These scenarios have been tested on Docker for Desktop but should be compatible for native Kubernetes environments like GKE. It is recommended that you do the scenarios in the order that they are listed to get the most out of this repository. If you find any issues please open up an issue in GitHub_
 
 ## Assumptions
 
