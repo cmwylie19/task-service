@@ -14,8 +14,8 @@ Typically, the upstream will be your application or Kubernetes Service, and each
 
 ## Steps
 
-- [install `glooctl`]()
-- install Gloo Edge API Gateway
+- [install `glooctl`](#install-glooctl)
+- [install Gloo Edge API Gateway](#install-gloo-edge-api-gateway)
 - deploy the task-service application into Kubernetes
 - Create a Virtual Service using `glooctl`
 - Add routes to your Virtual Service yaml manifest

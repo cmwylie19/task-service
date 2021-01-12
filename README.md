@@ -6,21 +6,21 @@ _This repository of scenarios is intended to explain how to use **Gloo Edge** as
 
 These scenarios are built around the express application found at `server.js`. 
 
-[**Scenario 1: Build and Deploy App in Kubernetes**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/DeployInK8s.md) 
+**Scenario 1**: [Build and Deploy App in Kubernetes](https://github.com/cmwylie19/task-service/blob/master/Scenarios/DeployInK8s.md) 
 - How to build a container image from the `Dockerfile`
 - How to push containers to a container registry
 - Create a Kubernetes eployment from the command line using an image
 - Create a Kubernetes Service from the command line from a deployment
 
-[**Scenario 2: Rewriting the Routes using a Virtual Service**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/TrafficManagement-RewriteRoutes.md)
+**Scenario 2**: [Rewriting the Routes using a Virtual Service](https://github.com/cmwylie19/task-service/blob/master/Scenarios/TrafficManagement-RewriteRoutes.md)
 - How to use `glooctl` to create a virtual service from scratch
 - How to create routes with glooctl
 - How to add routes to your Virtual Service in the yaml manifest
 
-[**Scenario 3: Applying Rate Limiting to Protect your app**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/RateLimiting.md)
+**Scenario 3**: [Applying Rate Limiting to Protect your app] https://github.com/cmwylie19/task-service/blob/master/Scenarios/RateLimiting.md)
 
 
-[**Scenario 4: Oauth2 with Google**](https://github.com/cmwylie19/task-service/blob/master/Scenarios/OAUTH2.md)
+**Scenario 4**: [Oauth2 with Google](https://github.com/cmwylie19/task-service/blob/master/Scenarios/OAUTH2.md)
 r to a container registryfound at `server.js` to build, deploy, manage, and secure the Task API.
 
 
@@ -37,10 +37,10 @@ _Gloo Edge is an API Gateway, and Kubernetes Ingress Controller that is packed w
 
 ## Scenarios
 
-- [Refresher on building a container from a Dockerfile, pushing to quay, and deploying into Kubernetes](https://github.com/cmwylie19/task-service/blob/master/Scenarios/DeployInK8s.md)
-- [Using Gloo Edge Traffic Management Features to rewrite routes in a Virtual Service](https://github.com/cmwylie19/task-service/blob/master/Scenarios/TrafficManagement-RewriteRoutes.md)
-- [Rate limiting Requests to Upstream services using Gloo Edge enterprise](https://github.com/cmwylie19/task-service/blob/master/Scenarios/RateLimiting.md)
-- [Securing Express endpoints with Google OAuth2 OIDC Flow](https://github.com/cmwylie19/task-service/blob/master/Scenarios/OAUTH2.md)
+- [Refresher on building a container from a Dockerfile, pushing to quay, and deploying into Kubernetes](Scenarios/DeployInK8s.md)
+- [Using Gloo Edge Traffic Management Features to rewrite routes in a Virtual Service](Scenarios/TrafficManagement-RewriteRoutes.md)
+- [Rate limiting Requests to Upstream services using Gloo Edge enterprise](Scenarios/RateLimiting.md)
+- [Securing Express endpoints with Google OAuth2 OIDC Flow](Scenarios/OAUTH2.md)
 
 ## Prereqs
 
