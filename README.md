@@ -24,10 +24,6 @@ These scenarios are built around the express application found at `server.js`.
 r to a container registryfound at `server.js` to build, deploy, manage, and secure the Task API.
 
 
-The scenarios will take you from building and deploying the application from a source to traffic re-routing, to rate limiting, to securing your Application with OAuth2 OIDC flow using Google as an authentication provider. 
-
-The first scenario is a provides a background and [howto guide](https://github.com/cmwylie19/task-service/blob/master/Scenarios/DeployInK8s.md) on Cloud Native Application Development and Deployment so feel free to skip it if you already know your way around the cluster._
-
 **NOTE:** It may be advantageous to refer back to this `README.md` while you are going through the scenarios to see how the application works _without_ Gloo Edge to better understand the transformations that are being made at the proxy level.
 
 ## Background
@@ -49,10 +45,7 @@ _Gloo Edge is an API Gateway, and Kubernetes Ingress Controller that is packed w
 ## Prereqs
 
 - kubectl
-- install `glooctl`
-- Docker
-- Gloo Edge
-- Kubernetes v1.11.3+ (I am user Docker Desktop with Kubernetes Enabled)
+- Docker Desktop with Kubernetes Enabled
 
 ## Basic Usage
 

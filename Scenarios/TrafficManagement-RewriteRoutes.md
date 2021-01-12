@@ -14,10 +14,11 @@ Typically, the upstream will be your application or Kubernetes Service, and each
 
 ## Steps
 
-- install `glooctl`
+- [install `glooctl`]()
 - install Gloo Edge API Gateway
 - deploy the task-service application into Kubernetes
-- Create rewrite rules in your Virtual Service to control traffic to your applications using `glooctl`
+- Create a Virtual Service using `glooctl`
+- Add routes to your Virtual Service yaml manifest
 - Export Virtual Services to yaml for quick deployment and to maintain good `infra as code`.
 - Clean up
 
